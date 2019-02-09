@@ -60,10 +60,14 @@ void handle_next_argument(int argument, struct option *long_options, int option_
 
 
 void print_help() {
+    printf("\n");
     printf("dumpassort\n\n");
     printf("Usage:\t./dumpassort dumpfile1 ... -d DESTINATION-DIRECTORY\n");
-    printf("\nOptions:\n");
-    printf("\t-d, --destination\t\tDestination directory to store the entries sorted.\n");
+    printf("\n");
+    printf("Options:\n");
+    printf("\t-d, --destination\tDestination directory to store the entries sorted.\n");
+    printf("\t\t\t\tIf no destination is given, it will use the default folder '%s'\n", DEFAULT_DIR_NAME);
+    printf("\n");
 }
 
 
