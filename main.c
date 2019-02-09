@@ -3,7 +3,10 @@
 #include <getopt.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <dirent.h>
+#include <errno.h>
 
+#define DEFAULT_DIR_NAME "pwds"
 
 static struct option long_options[] = {
     {"help", no_argument, 0, 'h'},
@@ -18,6 +21,7 @@ void parse_arguments(int argc, char **argv);
 void handle_next_argument(int argument, struct option *long_options, int option_index);
 void print_help();
 void validate_arguments();
+int exists_default_directory();
 
 
 int main (int argc, char **argv) {
@@ -38,10 +42,17 @@ void parse_arguments(int argc, char **argv) {
             break;
         }
     }
+    if (optind < argc) {
+        printf("Files:\n");
+        while (optind < argc) {
+            printf ("%s\n", argv[optind++]);
+        }
+    } else {
+        fprintf(stderr, "No input provided!\n");
+        print_help();
+        exit(1);
+    }
     validate_arguments();
-    //if (optind < argc) {
-    //    //argv[optind];
-    //}
 }
 
 
@@ -74,8 +85,27 @@ void print_help() {
 
 void validate_arguments() {
     if (destination_folder == NULL) {
-        fprintf(stderr, "No destination folder\n");
+        destination_folder = DEFAULT_DIR_NAME;
+        printf("[*] No destination folder specified.");
+        if (exists_default_directory()) {
+            printf(" Using default directory ./%s\n", DEFAULT_DIR_NAME);
+        } else {
+            printf("[+] Creating default directory ./%s\n", DEFAULT_DIR_NAME);
+        }
     } else {
         printf("Destination folder: '%s'\n", destination_folder);
+    }
+}
+
+int exists_default_directory() {
+    DIR* default_dir = opendir(DEFAULT_DIR_NAME);
+    if (default_dir) {
+        closedir(default_dir);
+        return 1;
+    } else if (ENOENT == errno) {
+        return 0;
+    } else {
+        fprintf(stderr, "Error checking default output directory.\n");
+        exit(1);
     }
 }
