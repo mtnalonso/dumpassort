@@ -25,12 +25,13 @@ int main (int argc, char **argv) {
     return 0;
 }
 
+
 void parse_arguments(int argc, char **argv) {
     int argument;
 
     while (1) {
         int option_index = 0;
-        argument = getopt_long(argc, argv, "hi:d:", long_options, &option_index);
+        argument = getopt_long(argc, argv, "hd:", long_options, &option_index);
         if (argument != -1) {
             handle_next_argument(argument, long_options, option_index);
         } else {
