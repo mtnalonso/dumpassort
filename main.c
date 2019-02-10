@@ -6,6 +6,7 @@
 
 #define DEFAULT_DIR_NAME "pwds"
 
+
 static struct option long_options[] = {
     {"help", no_argument, 0, 'h'},
     {"destination", required_argument, 0, 'd'},
@@ -18,7 +19,9 @@ static char **input_files = NULL;
 void parse_arguments(int argc, char **argv);
 void handle_next_argument(int argument, struct option *long_options, int option_index);
 void print_help();
+void set_input_files(int argc, char **argv, int optind);
 void validate_arguments();
+
 
 int main (int argc, char **argv) {
     parse_arguments(argc, argv);
@@ -27,11 +30,11 @@ int main (int argc, char **argv) {
 
 
 void parse_arguments(int argc, char **argv) {
+    int option_index;
     int argument;
-    int i = 0;
 
     while (1) {
-        int option_index = 0;
+        option_index = 0;
         argument = getopt_long(argc, argv, "hd:", long_options, &option_index);
         if (argument != -1) {
             handle_next_argument(argument, long_options, option_index);
@@ -40,16 +43,7 @@ void parse_arguments(int argc, char **argv) {
         }
     }
 
-    if (optind < argc) {
-        input_files = malloc((optind) * sizeof(char *));
-        while (optind < argc) {
-            input_files[i++] = argv[optind++];
-        }
-    } else {
-        fprintf(stderr, "No input provided!\n");
-        print_help();
-        exit(1);
-    }
+    set_input_files(argc, argv, optind);
     validate_arguments();
 }
 
@@ -80,6 +74,20 @@ void print_help() {
     printf("\n");
 }
 
+
+void set_input_files(int argc, char **argv, int optind) {
+    int i = 0;
+    if (optind < argc) {
+        input_files = malloc((optind) * sizeof(char *));
+        while (optind < argc) {
+            input_files[i++] = argv[optind++];
+        }
+    } else {
+        fprintf(stderr, "No input provided!\n");
+        print_help();
+        exit(1);
+    }
+}
 
 void validate_arguments() {
     if (destination_folder == NULL) {
