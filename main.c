@@ -3,6 +3,7 @@
 #include <getopt.h>
 #include <unistd.h>
 #include <ctype.h>
+#include "reader.h"
 
 #define DEFAULT_DIR_NAME "pwds"
 
@@ -14,6 +15,7 @@ static struct option long_options[] = {
 };
 static char *destination_folder = NULL;
 static char **input_files = NULL;
+static int n_input_files = 0;
 
 
 void parse_arguments(int argc, char **argv);
@@ -25,6 +27,9 @@ void validate_arguments();
 
 int main (int argc, char **argv) {
     parse_arguments(argc, argv);
+    for (int i=0; i < n_input_files; i++) {
+        read_file(input_files[i]);
+    }
     return 0;
 }
 
@@ -81,6 +86,7 @@ void set_input_files(int argc, char **argv, int optind) {
         input_files = malloc((optind) * sizeof(char *));
         while (optind < argc) {
             input_files[i++] = argv[optind++];
+            n_input_files = i;
         }
     } else {
         fprintf(stderr, "No input provided!\n");

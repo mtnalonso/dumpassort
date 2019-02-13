@@ -3,10 +3,17 @@ CC=gcc
 UNAME		:= $(shell uname -s)
 $(info Building for ${UNAME});
 
-all: generate
+src = $(wildcard *.c)
+obj = $(src:.c=.o)
+
+all: main
+
+main:
+	$(CC) -o dumpassort main.c reader.c
 
 debug:
-	gcc -g -o dumpassort main.c
+	$(CC) -g -o dumpassort main.c reader.c
 
-generate:
-	gcc main.c -o dumpassort
+.PHONY: clean
+clean:
+	rm -f $(obj) dumpassort
