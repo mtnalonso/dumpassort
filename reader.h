@@ -1,6 +1,3 @@
 
-#define MAX_LINE_LENGTH 100
-
-void read_file(char *filename);
-const char *read_file_line();
+void read_file(const char *filename, const char *output_dir);
 

@@ -29,7 +29,9 @@ int main (int argc, char **argv) {
     parse_arguments(argc, argv);
     for (int i=0; i < n_input_files; i++) {
         read_file(input_files[i]);
+        read_file(input_files[i], destination_folder);
     }
+    free(destination_folder);
     return 0;
 }
 

@@ -1,9 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include "reader.h"
 
 
-void read_file(char *filename) {
+void process_line(const char *line);
+int line_is_empty(const char *line);
+int file_exits(const char *filename);
+
+
+void read_file(const char *filename, const char *output_dir) {
     FILE *fp;
     char *line = NULL;
     size_t len = 0;
@@ -16,7 +26,7 @@ void read_file(char *filename) {
     }
 
     while((read = getline(&line, &len, fp)) != -1) {
-        printf("%s", line);
+        process_line(line);
     }
 
     free(line);
@@ -24,9 +34,17 @@ void read_file(char *filename) {
 }
 
 
-const char *read_file_line() {
-    char *line_buffer = (char *) malloc(sizeof(char) * MAX_LINE_LENGTH);
+void process_line(const char *line) {
+    char *filepath = (char *) malloc(sizeof(char) * strlen(line));
 
-    free(line_buffer);
-    return NULL;
+    if (line_is_empty(line)) {
+        return;
+    }
+
+    struct stat path_stat;
+        
+
+    printf("%s", line);
 }
+
+
