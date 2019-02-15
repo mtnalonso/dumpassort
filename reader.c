@@ -48,3 +48,8 @@ void process_line(const char *line) {
 }
 
 
+int line_is_empty(const char *line) {
+    return (line == NULL || strlen(line) == 0);
+}
+
+
