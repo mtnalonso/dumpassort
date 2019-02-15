@@ -7,8 +7,7 @@
 #include <limits.h>
 
 #include "reader.h"
-
-#define DEFAULT_DIR_NAME "pwds"
+#include "dumpassort.h"
 
 
 static struct option long_options[] = {
