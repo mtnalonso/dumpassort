@@ -5,12 +5,14 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+#include "dumpassort.h"
 #include "reader.h"
 
 
 void process_line(const char *line);
 int line_is_empty(const char *line);
-int file_exits(const char *filename);
+int is_regular_file(const char *path);
+int is_directory(const char *path);
 
 
 void read_file(const char *filename, const char *output_dir) {
@@ -36,13 +38,12 @@ void read_file(const char *filename, const char *output_dir) {
 
 void process_line(const char *line) {
     char *filepath = (char *) malloc(sizeof(char) * strlen(line));
+    char *default_path = "/Users/martin/workspace/dumpassort/pwds/";
 
     if (line_is_empty(line)) {
         return;
     }
 
-    struct stat path_stat;
-        
 
     printf("%s", line);
 }
@@ -52,4 +53,17 @@ int line_is_empty(const char *line) {
     return (line == NULL || strlen(line) == 0);
 }
 
+
+int is_regular_file(const char *path) {
+    struct stat file_stat;
+    start(filepath, &file_stat);
+    return S_ISREG(file_stat.st_mode);
+}
+
+
+int is_directory(const char *path) {
+    struct stat file_stat;
+    start(filepath, &file_stat);
+    return S_ISDIR(file_stat.st_mode);
+}
 
