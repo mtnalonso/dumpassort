@@ -39,14 +39,30 @@ void read_file(const char *filename, const char *output_dir) {
 
 void process_line(const char *line, const char *output_dir) {
     char *filepath = (char *) malloc(sizeof(char) * (strlen(output_dir) + strlen(line)));
+    int i = 0;
 
     if (line_is_empty(line)) {
         return;
     }
 
     strncpy(filepath, output_dir, strlen(output_dir));
-    strncat(filepath, &line[0], 1);
-    printf("filepath: %s\n", filepath);
+
+    while (1) {
+        strncat(filepath, &line[i], 1);
+        printf("filepath: %s\n", filepath);
+        if (is_regular_file(filepath)) {
+            // TODO: check size, if it does not pass the threshold, save
+            printf("Saving \"%s\"\t=> %s\n", line, filepath);
+            break;
+        } else if (is_directory(filepath)) {
+            strncat(filepath, "/", 1);
+            i++;
+        } else {
+            fprintf(stderr, "Path %s does not exist", filepath);
+            exit(EXIT_FAILURE);
+        }
+    }
+
     exit(EXIT_SUCCESS);
 
     printf("%s", line);
