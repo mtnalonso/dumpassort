@@ -56,14 +56,14 @@ int line_is_empty(const char *line) {
 
 int is_regular_file(const char *path) {
     struct stat file_stat;
-    start(filepath, &file_stat);
+    stat(filepath, &file_stat);
     return S_ISREG(file_stat.st_mode);
 }
 
 
 int is_directory(const char *path) {
     struct stat file_stat;
-    start(filepath, &file_stat);
+    stat(filepath, &file_stat);
     return S_ISDIR(file_stat.st_mode);
 }
 
