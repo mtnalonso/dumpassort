@@ -101,7 +101,7 @@ void set_input_files(int argc, char **argv, int optind) {
 
 void validate_arguments() {
     if (destination_folder == NULL) {
-        int destination_folder_len = strlen(DEFAULT_DIR_NAME) + PATH_MAX + 2;
+        int destination_folder_len = strlen(DEFAULT_DIR_NAME) + PATH_MAX + 3;
         destination_folder = (char *) malloc(sizeof(char *) * destination_folder_len);
 
         char *cwd = get_current_directory();
@@ -109,6 +109,7 @@ void validate_arguments() {
         strncpy(destination_folder, cwd, strlen(cwd));
         strncat(destination_folder, "/", 1);
         strncat(destination_folder, DEFAULT_DIR_NAME, strlen(DEFAULT_DIR_NAME));
+        strncat(destination_folder, "/", 1);
         printf("[*] No destination folder specified.\n");
     } else {
         printf("Destination folder: '%s'\n", destination_folder);
