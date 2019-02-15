@@ -3,6 +3,9 @@
 #include <getopt.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <string.h>
+#include <limits.h>
+
 #include "reader.h"
 
 #define DEFAULT_DIR_NAME "pwds"
@@ -23,12 +26,12 @@ void handle_next_argument(int argument, struct option *long_options, int option_
 void print_help();
 void set_input_files(int argc, char **argv, int optind);
 void validate_arguments();
+char *get_current_directory();
 
 
 int main (int argc, char **argv) {
     parse_arguments(argc, argv);
     for (int i=0; i < n_input_files; i++) {
-        read_file(input_files[i]);
         read_file(input_files[i], destination_folder);
     }
     free(destination_folder);
@@ -91,7 +94,7 @@ void set_input_files(int argc, char **argv, int optind) {
             n_input_files = i;
         }
     } else {
-        fprintf(stderr, "No input provided!\n");
+        perror("No input provided!\n");
         print_help();
         exit(1);
     }
@@ -99,10 +102,30 @@ void set_input_files(int argc, char **argv, int optind) {
 
 void validate_arguments() {
     if (destination_folder == NULL) {
-        destination_folder = DEFAULT_DIR_NAME;
+        int destination_folder_len = strlen(DEFAULT_DIR_NAME) + PATH_MAX + 2;
+        destination_folder = (char *) malloc(sizeof(char *) * destination_folder_len);
+
+        char *cwd = get_current_directory();
+
+        strncpy(destination_folder, cwd, strlen(cwd));
+        strncat(destination_folder, "/", 1);
+        strncat(destination_folder, DEFAULT_DIR_NAME, strlen(DEFAULT_DIR_NAME));
         printf("[*] No destination folder specified.\n");
     } else {
         printf("Destination folder: '%s'\n", destination_folder);
+    }
+}
+
+
+char *get_current_directory() {
+    static char cwd[PATH_MAX + 1];
+    getcwd(cwd, PATH_MAX + 1);
+
+    if (strlen(cwd) != 0) {
+        return cwd;
+    } else {
+        perror("Error getting cwd");
+        exit(EXIT_FAILURE);
     }
 }
 
