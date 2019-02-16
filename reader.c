@@ -37,7 +37,6 @@ void read_file(const char *filename, const char *output_dir) {
     }
 
     free(line);
-    exit(EXIT_SUCCESS);
 }
 
 void presetup(const char *output_dir) {
