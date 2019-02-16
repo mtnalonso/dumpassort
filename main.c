@@ -30,6 +30,7 @@ char *get_current_directory();
 
 int main (int argc, char **argv) {
     parse_arguments(argc, argv);
+    presetup(destination_folder);
     for (int i=0; i < n_input_files; i++) {
         read_file(input_files[i], destination_folder);
     }
