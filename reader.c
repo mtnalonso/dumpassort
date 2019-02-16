@@ -14,6 +14,7 @@ void process_line(const char *line, const char *output_dir);
 int line_is_empty(const char *line);
 int is_regular_file(const char *path);
 int is_directory(const char *path);
+void append_line_to_file(const char *line, const char *filename);
 
 
 void read_file(const char *filename, const char *output_dir) {
@@ -49,10 +50,8 @@ void process_line(const char *line, const char *output_dir) {
 
     while (1) {
         strncat(filepath, &line[i], 1);
-        printf("filepath: %s\n", filepath);
         if (is_regular_file(filepath)) {
-            // TODO: check size, if it does not pass the threshold, save
-            printf("Saving \"%s\"\t=> %s\n", line, filepath);
+            append_line_to_file(line, filepath);
             break;
         } else if (is_directory(filepath)) {
             strncat(filepath, "/", 1);
@@ -63,9 +62,15 @@ void process_line(const char *line, const char *output_dir) {
         }
     }
 
-    exit(EXIT_SUCCESS);
-
     printf("%s", line);
+}
+
+void append_line_to_file(const char *line, const char *filename) {
+    FILE *fp;
+    fp = fopen(filename, "a");
+    fprintf(fp, "%s", line);
+    fclose(fp);
+    return;
 }
 
 
