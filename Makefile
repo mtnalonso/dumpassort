@@ -8,10 +8,10 @@ obj = $(src:.c=.o)
 all: main
 
 main:
-	$(CC) -o dumpassort main.c reader.c
+	$(CC) -o dumpassort main.c reader.c diropt.c
 
 debug:
-	$(CC) -g -o dumpassort main.c reader.c
+	$(CC) -g -o dumpassort main.c reader.c diropt.c
 
 .PHONY: clean
 clean:

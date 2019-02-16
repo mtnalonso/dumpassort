@@ -6,8 +6,9 @@
 #include <string.h>
 #include <limits.h>
 
-#include "reader.h"
 #include "dumpassort.h"
+#include "reader.h"
+#include "diropt.h"
 
 
 static struct option long_options[] = {
@@ -30,10 +31,13 @@ char *get_current_directory();
 
 int main (int argc, char **argv) {
     parse_arguments(argc, argv);
+
     presetup(destination_folder);
     for (int i=0; i < n_input_files; i++) {
         read_file(input_files[i], destination_folder);
     }
+    optimize_all(destination_folder);
+
     free(destination_folder);
     exit(EXIT_SUCCESS);
 }
