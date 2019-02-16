@@ -38,7 +38,8 @@ void read_file(const char *filename, const char *output_dir) {
     }
 
     free(line);
-    printf("[+] The file \"\" has been imported!\n", filename);
+    printf("\n");
+    printf("[+] The file \"%s\" has been imported!\n", filename);
 }
 
 void presetup(const char *output_dir) {
@@ -113,7 +114,7 @@ void process_line(const char *line, const char *output_dir) {
             strncat(filepath, "/", 1);
             i++;
         } else {
-            fprintf(stderr, "[-] Could not import email: %s", line);
+            fprintf(stderr, "[-] Could not import token: %s", line);
             break;
         }
     }
