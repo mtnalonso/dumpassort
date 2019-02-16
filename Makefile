@@ -1,7 +1,6 @@
 CC=gcc
 
 UNAME		:= $(shell uname -s)
-$(info Building for ${UNAME});
 
 src = $(wildcard *.c)
 obj = $(src:.c=.o)
