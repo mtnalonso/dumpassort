@@ -41,13 +41,17 @@ void read_file(const char *filename, const char *output_dir) {
     printf("[+] The file \"%s\" has been imported!\n", filename);
 }
 
-void presetup(const char *output_dir) {
+void presetup(const char *output_dir, int sublevel) {
     if (is_directory(output_dir) < 1) {
         mkdir(output_dir, 0700);
-        printf("[+] Created default dest directory: %s\n", output_dir);
+        printf("[+] Created dest directory: %s\n", output_dir);
 
-        for (int i = 0; i < strlen(dest_folders); i++) {
-            create_subdirectory(output_dir, &dest_folders[i]);
+        if (sublevel) {
+            for (int i = 0; i < strlen(dest_folders); i++) {
+                create_subdirectory(output_dir, &dest_folders[i]);
+            }
+        } else {
+            create_directory_default_files(output_dir);
         }
     }   
 }
