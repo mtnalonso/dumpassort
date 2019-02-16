@@ -10,6 +10,7 @@
 
 
 void optimize_directory(const char *dirname);
+void optimize_directory_entry(const char *dirname, const char *entryname);
 int not_folder_ref_files(const char *filename);
 
 
@@ -31,26 +32,32 @@ void optimize_directory(const char *dirname) {
 
     while ((directory_entry = readdir(directory)) != NULL) {
         if (not_folder_ref_files(directory_entry->d_name)) {
-            filename = (char *) malloc(strlen(dirname) + strlen(directory_entry->d_name) + 2);
-            filename = strdup(dirname);
-            strncat(filename, directory_entry->d_name, strlen(directory_entry->d_name));
-
-            if (is_regular_file(filename)) {
-                printf("-> %s\n", directory_entry->d_name);
-                // TODO: check if file is grater than MAX
-                // if -> create a dir with file name -> sort using reader
-                // with that file as input
-            } else if (is_directory(filename)){
-                strncat(filename, "/", 1);
-                printf("Directory:%s\n", filename);
-                optimize_directory(filename);
-            }
-            free(filename);
+            optimize_directory_entry(dirname, directory_entry->d_name);
         }
     }
 
     closedir(directory);
     return;
+}
+
+void optimize_directory_entry(const char *dirname, const char *entryname) {
+    char *filename;
+
+    filename = (char *) malloc(strlen(dirname) + strlen(entryname) + 2);
+    filename = strdup(dirname);
+    strncat(filename, entryname, strlen(entryname));
+
+    if (is_regular_file(filename)) {
+        printf("-> %s\n", entryname);
+        // TODO: check if file is grater than MAX
+        // if -> create a dir with file name -> sort using reader
+        // with that file as input
+    } else if (is_directory(filename)){
+        strncat(filename, "/", 1);
+        printf("Directory:%s\n", filename);
+        optimize_directory(filename);
+    }
+    free(filename);
 }
 
 
