@@ -56,8 +56,11 @@ void process_line(const char *line, const char *output_dir) {
         } else if (is_directory(filepath)) {
             strncat(filepath, "/", 1);
             i++;
-        } else {
+        } else if (strlen(output_dir) >= strlen(line)) {
             fprintf(stderr, "Path %s does not exist", filepath);
+            exit(EXIT_FAILURE);
+        } else {
+            fprintf(stderr, "Symbol email: %s", line);
             exit(EXIT_FAILURE);
         }
     }
