@@ -61,8 +61,6 @@ void process_line(const char *line, const char *output_dir) {
             exit(EXIT_FAILURE);
         }
     }
-
-    printf("%s", line);
 }
 
 void append_line_to_file(const char *line, const char *filename) {
