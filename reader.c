@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
+#include <ctype.h>
 
 #include "dumpassort.h"
 #include "reader.h"
@@ -83,6 +84,7 @@ void create_directory_default_files(const char *output_dir) {
 
 void process_line(const char *line, const char *output_dir) {
     char *filepath = (char *) malloc(sizeof(char) * (strlen(output_dir) + strlen(line)));
+    char current_char[2];
     int i = 0;
 
     if (line_is_empty(line)) {
@@ -92,19 +94,27 @@ void process_line(const char *line, const char *output_dir) {
     strncpy(filepath, output_dir, strlen(output_dir));
 
     while (1) {
-        strncat(filepath, &line[i], 1);
+        current_char[0] = line[i];
+        current_char[1] = '\0';
+
+        if (isalpha(current_char[0])) {
+            current_char[0] = tolower(current_char[0]);
+        } else if (isdigit(current_char[0]) == 0) {
+            current_char[0] = '+';
+        }
+
+        strncat(filepath, current_char, 1);
+
         if (is_regular_file(filepath)) {
             append_line_to_file(line, filepath);
             break;
         } else if (is_directory(filepath)) {
             strncat(filepath, "/", 1);
             i++;
-        } else if (strlen(output_dir) >= strlen(line)) {
-            fprintf(stderr, "Path %s does not exist", filepath);
-            exit(EXIT_FAILURE);
         } else {
             fprintf(stderr, "Symbol email: %s", line);
             exit(EXIT_FAILURE);
+            break;
         }
     }
 }
