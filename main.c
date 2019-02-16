@@ -35,7 +35,7 @@ int main (int argc, char **argv) {
         read_file(input_files[i], destination_folder);
     }
     free(destination_folder);
-    return 0;
+    exit(EXIT_SUCCESS);
 }
 
 

@@ -65,6 +65,7 @@ void create_subdirectory(const char *output_dir, const char *folder) {
     free(sub_dir);
 }
 
+
 void create_directory_default_files(const char *output_dir) {
     for (int i = 0; i < strlen(dest_folders); i++) {
         char *filename = (char *) malloc(strlen(output_dir) + 2);
