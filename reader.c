@@ -38,6 +38,7 @@ void read_file(const char *filename, const char *output_dir) {
     }
 
     free(line);
+    printf("[+] The file \"\" has been imported!\n", filename);
 }
 
 void presetup(const char *output_dir) {
@@ -112,12 +113,12 @@ void process_line(const char *line, const char *output_dir) {
             strncat(filepath, "/", 1);
             i++;
         } else {
-            fprintf(stderr, "Symbol email: %s", line);
-            exit(EXIT_FAILURE);
+            fprintf(stderr, "[-] Could not import email: %s", line);
             break;
         }
     }
 }
+
 
 void append_line_to_file(const char *line, const char *filename) {
     FILE *fp;
