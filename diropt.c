@@ -4,6 +4,10 @@
 #include <string.h>
 
 #include "dumpassort.h"
+#include "diropt.h"
+#include "dirutils.h"
+#include "reader.h"
+
 
 void optimize_directory(const char *dirname);
 int not_folder_ref_files(const char *filename);
@@ -18,6 +22,7 @@ void optimize_all(const char *dest_dir) {
 void optimize_directory(const char *dirname) {
     struct dirent *directory_entry;
     DIR *directory = opendir(dirname);
+    char *filename;
 
     if (directory == NULL) {
         fprintf(stderr, "Could not open directory %s to optimize files.\n", dirname);
@@ -26,7 +31,21 @@ void optimize_directory(const char *dirname) {
 
     while ((directory_entry = readdir(directory)) != NULL) {
         if (not_folder_ref_files(directory_entry->d_name)) {
-            printf("-> %s\n", directory_entry->d_name);
+            filename = (char *) malloc(strlen(dirname) + strlen(directory_entry->d_name) + 2);
+            filename = strdup(dirname);
+            strncat(filename, directory_entry->d_name, strlen(directory_entry->d_name));
+
+            if (is_regular_file(filename)) {
+                printf("-> %s\n", directory_entry->d_name);
+                // TODO: check if file is grater than MAX
+                // if -> create a dir with file name -> sort using reader
+                // with that file as input
+            } else if (is_directory(filename)){
+                strncat(filename, "/", 1);
+                printf("Directory:%s\n", filename);
+                optimize_directory(filename);
+            }
+            free(filename);
         }
     }
 

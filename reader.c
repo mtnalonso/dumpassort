@@ -10,12 +10,11 @@
 
 #include "dumpassort.h"
 #include "reader.h"
+#include "dirutils.h"
 
 
 void process_line(const char *line, const char *output_dir);
 int line_is_empty(const char *line);
-int is_regular_file(const char *path);
-int is_directory(const char *path);
 void append_line_to_file(const char *line, const char *filename);
 void create_subdirectory(const char *output_dir, const char *folder);
 void create_directory_default_files(const char *output_dir);
@@ -132,19 +131,5 @@ void append_line_to_file(const char *line, const char *filename) {
 
 int line_is_empty(const char *line) {
     return (line == NULL || strlen(line) == 0);
-}
-
-
-int is_regular_file(const char *path) {
-    struct stat file_stat;
-    stat(path, &file_stat);
-    return S_ISREG(file_stat.st_mode);
-}
-
-
-int is_directory(const char *path) {
-    struct stat file_stat;
-    stat(path, &file_stat);
-    return S_ISDIR(file_stat.st_mode);
 }
 
