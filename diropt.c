@@ -15,7 +15,11 @@ int not_folder_ref_files(const char *filename);
 int has_max_file_size(const char *filename);
 
 
+const char *DEFAULT_DIR = NULL;
+
+
 void optimize_all(const char *dest_dir) {
+    DEFAULT_DIR = strdup(dest_dir);
     optimize_directory(dest_dir);
     return;
 }
@@ -62,7 +66,7 @@ void optimize_directory_entry(const char *dirname, const char *entryname) {
             strncat(filename, "/", 1);
 
             presetup(filename, 0);
-            read_file(import_temp_filename, filename);
+            read_file(import_temp_filename, DEFAULT_DIR);
             remove_file(import_temp_filename);
 
             free(import_temp_filename);
