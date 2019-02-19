@@ -7,10 +7,13 @@
 #include <string.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <pthread.h>
 
 #include "dumpassort.h"
 #include "reader.h"
 #include "dirutils.h"
+
+#define N_THREADS 50
 
 
 void process_line(const char *line, const char *output_dir);
@@ -18,28 +21,76 @@ int line_is_empty(const char *line);
 void append_line_to_file(const char *line, const char *filename);
 void create_subdirectory(const char *output_dir, const char *folder);
 void create_directory_default_files(const char *output_dir);
+void *read_file_thread(void *p_file_reader);
+
+
+struct file_reader_st {
+    pthread_t thid;
+    pthread_mutex_t *p_mutex;
+    FILE *fp;
+    const char *output_dir;
+};
 
 
 void read_file(const char *filename, const char *output_dir) {
+    struct file_reader_st file_reader[N_THREADS];
     FILE *fp;
-    char *line = NULL;
-    size_t len = 0;
-    ssize_t read;
-    fp = fopen(filename, "r");
+    pthread_mutex_t reader_mutex;
 
+    fp = fopen(filename, "r");
     if (fp == NULL) {
         perror("Error opening the file.\n");
         exit(EXIT_FAILURE);
     }
 
-    while((read = getline(&line, &len, fp)) != -1) {
-        process_line(line, output_dir);
+    pthread_mutex_init(&reader_mutex, NULL);
+
+    for (int i=0; i < N_THREADS; i++) {
+        file_reader[i].fp = fp;
+        file_reader[i].p_mutex = &reader_mutex;
+        file_reader[i].output_dir = output_dir;
+    }
+
+    for (int i = 0; i < N_THREADS; i++) {
+        pthread_create(&file_reader[i].thid, NULL, read_file_thread, (void *) &file_reader[i]);
+    }
+
+    for (int i= 0; i < N_THREADS; i++) {
+        pthread_join(file_reader[i].thid, NULL);
+    }
+
+    fclose(fp);
+    pthread_mutex_destroy(&reader_mutex);
+    printf("\n");
+    printf("[+] The file \"%s\" has been imported!\n", filename);
+    return;
+}
+
+
+void *read_file_thread(void *p_file_reader) {
+    struct file_reader_st *file_reader = p_file_reader;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+    while (1) {
+        if (feof(file_reader->fp)) {
+            break;
+        }
+
+        pthread_mutex_lock(file_reader->p_mutex);
+        read = getline(&line, &len, file_reader->fp);
+        pthread_mutex_unlock(file_reader->p_mutex);
+
+        if (read != -1) {
+            process_line(line, file_reader->output_dir);
+        }
     }
 
     free(line);
-    printf("\n");
-    printf("[+] The file \"%s\" has been imported!\n", filename);
+    return NULL;
 }
+
 
 void presetup(const char *output_dir, int sublevel) {
     if (is_directory(output_dir) < 1) {
